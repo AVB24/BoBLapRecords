@@ -151,3 +151,59 @@ class Racer(db.Model):
     
     def __repr__(self):
         return '<Racer {0}>'.format(self.name)
+
+class Race(db.Model):
+
+    __tablename__ = 'races'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    driver = db.relationship('Racer', backref='race')
+    track = db.relationship('Track', backref='race')
+    event = db.relationship('Event', backref='race')
+    time = db.Column(db.String(255))
+
+    def __init__(self, driver, track, event, time):
+        self.driver = driver
+        self.track = track
+        self.event = event
+        self.time = time
+    
+    def __repr__(self):
+        return "<Race(driver='%s', track='%s', event='%s')>" % (self.driver, self.track, self.event)
+
+class BestLap(db.Model):
+
+    __tablename__ = 'bestlaps'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    driver = db.relationship('Racer', backref='bestlap')
+    raceclass = db.relationship('RaceClass', backref='bestlap')
+    event = db.relationship('Event', backref='bestlap')
+    track = db.relationship('Track', backref='bestlap')
+    time = db.Column(db.Float)
+    isBest = db.Column(db.Boolean)
+
+    def __init__(self, driver, raceclass, event, track, time, isBest):
+        self.driver = driver
+        self.raceclass = raceclass
+        self.event = event
+        self.track = track
+        self.time = time
+        self.isBest = isBest
+
+    def __repr__(self):
+        return "<BestLap(driver='%s', raceclass='%s', track='%s', time='%s')>" % (self.driver, self.raceclass, self.track, self.time)
+
+
+class Record(db.Model):
+    
+    __tablename__ = 'records'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    csv = db.Column(db.Blob)
+
+    def __init__(self, csv):
+        self.csv = csv
+
+    def __repr__(self):
+        return '<Record {0}>'.format(self.csv)
